@@ -9,25 +9,30 @@ class Bogie {
         this.name = name;
         this.capacity = capacity;
     }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public String toString() {
+        return name + " (" + capacity + ")";
+    }
 }
 
 public class TrainManagmentapp {
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
-
         List<Bogie> bogies = new ArrayList<>();
 
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 60));
         bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("Luxury", 80));
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 65));
 
-        List<Bogie> filtered = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
+        int totalSeats = bogies.stream()
+                .map(b -> b.getCapacity())
+                .reduce(0, Integer::sum);
 
-        for (Bogie b : filtered) {
-            System.out.println(b.name + " Capacity: " + b.capacity);
-        }
+        System.out.println("Total Seating Capacity: " + totalSeats);
     }
 }
