@@ -23,13 +23,21 @@ public class TrainManagmentapp {
         System.out.println("Final bogie list: " + passengerBogies);
 import java.util.stream.*;
 
-class Bogie {
-    String name;
-    int capacity;
+class GoodsBogie {
+    String type;
+    String cargo;
 
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
+    GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getCargo() {
+        return cargo;
     }
 
     public String getName() {
@@ -55,6 +63,20 @@ class Bogie {
 
 public class TrainManagmentappUC1toUC8 {
     public static void main(String[] args) {
+        List<GoodsBogie> bogies = new ArrayList<>();
+
+        bogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        bogies.add(new GoodsBogie("Open", "Coal"));
+        bogies.add(new GoodsBogie("Box", "Grain"));
+
+        boolean isSafe = bogies.stream()
+                .allMatch(b -> !b.getType().equals("Cylindrical") || b.getCargo().equals("Petroleum"));
+
+        if (isSafe) {
+            System.out.println("Train is Safety Compliant");
+        } else {
+            System.out.println("Train is NOT Safety Compliant");
+        }
         System.out.println("=== Train Consist Management App ===");
         
         Set<String> bogieIds = new HashSet<>();
