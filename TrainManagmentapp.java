@@ -1,33 +1,39 @@
 import java.util.*;
 import java.util.stream.*;
 
-class Bogie {
-    String name;
-    int capacity;
+class GoodsBogie {
+    String type;
+    String cargo;
 
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
+    GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getCargo() {
+        return cargo;
     }
 }
 
 public class TrainManagmentapp {
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
+        List<GoodsBogie> bogies = new ArrayList<>();
 
-        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        bogies.add(new GoodsBogie("Open", "Coal"));
+        bogies.add(new GoodsBogie("Box", "Grain"));
 
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 60));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("Luxury", 80));
+        boolean isSafe = bogies.stream()
+                .allMatch(b -> !b.getType().equals("Cylindrical") || b.getCargo().equals("Petroleum"));
 
-        List<Bogie> filtered = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-
-        for (Bogie b : filtered) {
-            System.out.println(b.name + " Capacity: " + b.capacity);
+        if (isSafe) {
+            System.out.println("Train is Safety Compliant");
+        } else {
+            System.out.println("Train is NOT Safety Compliant");
         }
     }
 }
