@@ -1,127 +1,57 @@
 import org.junit.jupiter.api.Test;
-import java.util.*;
-import java.util.stream.*;
+import java.util.regex.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrainManagmentappTESTCASES {
 
-    static class Bogie {
-        String name;
-        int capacity;
+    Pattern trainPattern = Pattern.compile("TRN-\\d{4}");
+    Pattern cargoPattern = Pattern.compile("PET-[A-Z]{2}");
 
-        Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
-        }
+    @Test
+    void testRegex_ValidTrainID() {
+        assertTrue(trainPattern.matcher("TRN-1234").matches());
     }
 
     @Test
-    void testFilter_CapacityGreaterThanThreshold() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("AC Chair", 60),
-                new Bogie("First Class", 24)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(1, result.size());
+    void testRegex_InvalidTrainIDFormat() {
+        assertFalse(trainPattern.matcher("TRAIN12").matches());
+        assertFalse(trainPattern.matcher("TRN12A").matches());
+        assertFalse(trainPattern.matcher("1234-TRN").matches());
     }
 
     @Test
-    void testFilter_CapacityEqualToThreshold() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 70),
-                new Bogie("AC Chair", 60)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
+    void testRegex_ValidCargoCode() {
+        assertTrue(cargoPattern.matcher("PET-AB").matches());
     }
 
     @Test
-    void testFilter_CapacityLessThanThreshold() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("First Class", 24),
-                new Bogie("AC Chair", 60)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
+    void testRegex_InvalidCargoCodeFormat() {
+        assertFalse(cargoPattern.matcher("PET-ab").matches());
+        assertFalse(cargoPattern.matcher("PET123").matches());
+        assertFalse(cargoPattern.matcher("AB-PET").matches());
     }
 
     @Test
-    void testFilter_MultipleBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("Luxury", 90),
-                new Bogie("AC Chair", 60)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
+    void testRegex_TrainIDDigitLengthValidation() {
+        assertFalse(trainPattern.matcher("TRN-123").matches());
+        assertFalse(trainPattern.matcher("TRN-12345").matches());
     }
 
     @Test
-    void testFilter_NoBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("AC Chair", 60),
-                new Bogie("First Class", 24)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
+    void testRegex_CargoCodeUppercaseValidation() {
+        assertFalse(cargoPattern.matcher("PET-Ab").matches());
+        assertFalse(cargoPattern.matcher("PET-aB").matches());
     }
 
     @Test
-    void testFilter_AllBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("Luxury", 90)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
+    void testRegex_EmptyInputHandling() {
+        assertFalse(trainPattern.matcher("").matches());
+        assertFalse(cargoPattern.matcher("").matches());
     }
 
     @Test
-    void testFilter_EmptyBogieList() {
-        List<Bogie> bogies = new ArrayList<>();
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testFilter_OriginalListUnchanged() {
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 80));
-        bogies.add(new Bogie("AC Chair", 60));
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(2, bogies.size());
+    void testRegex_ExactPatternMatch() {
+        assertFalse(trainPattern.matcher("TRN-1234X").matches());
+        assertFalse(cargoPattern.matcher("PET-ABCD").matches());
     }
 }
