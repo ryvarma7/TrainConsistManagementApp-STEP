@@ -10,6 +10,8 @@ class Bogie {
         this.capacity = capacity;
     }
 
+    public String getName() {
+        return name;
     public int getCapacity() {
         return capacity;
     }
@@ -29,6 +31,13 @@ public class TrainManagmentapp {
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 65));
 
+        Map<String, List<Bogie>> grouped =
+                bogies.stream()
+                        .collect(Collectors.groupingBy(b -> b.getName()));
+
+        grouped.forEach((key, value) -> {
+            System.out.println(key + " -> " + value);
+        });
         int totalSeats = bogies.stream()
                 .map(b -> b.getCapacity())
                 .reduce(0, Integer::sum);
