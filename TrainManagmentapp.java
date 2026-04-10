@@ -1,11 +1,17 @@
 import java.util.*;
 
-public class TrainManagmentapp {
+public class TrainManagmentappUC1toUC8 {
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
         
-        List<String> bogies = new ArrayList<>();
+        HashMap<String, Integer> bogieCapacity = new HashMap<>();
         
-        System.out.println("Initial bogie count: " + bogies.size());
+        bogieCapacity.put("Sleeper", 72);
+        bogieCapacity.put("AC Chair", 60);
+        bogieCapacity.put("First Class", 24);
+        
+        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
+            System.out.println(entry.getKey() + " Capacity: " + entry.getValue());
+        }
     }
 }
