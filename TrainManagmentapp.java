@@ -12,6 +12,8 @@ class Bogie {
 
     public String getName() {
         return name;
+    public int getCapacity() {
+        return capacity;
     }
 
     public String toString() {
@@ -36,5 +38,10 @@ public class TrainManagmentapp {
         grouped.forEach((key, value) -> {
             System.out.println(key + " -> " + value);
         });
+        int totalSeats = bogies.stream()
+                .map(b -> b.getCapacity())
+                .reduce(0, Integer::sum);
+
+        System.out.println("Total Seating Capacity: " + totalSeats);
     }
 }

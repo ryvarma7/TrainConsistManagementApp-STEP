@@ -80,5 +80,54 @@ class TrainManagmentappTESTCASES {
         int originalSize = list.size();
         list.stream().collect(Collectors.groupingBy(b -> b.getName()));
         assertEquals(originalSize, list.size());
+    void testReduce_TotalSeatCalculation() {
+        List<Bogie> list = getSampleBogies();
+        int total = list.stream().map(b -> b.getCapacity()).reduce(0, Integer::sum);
+        assertEquals(156, total);
+    }
+
+    @Test
+    void testReduce_MultipleBogiesAggregation() {
+        List<Bogie> list = getSampleBogies();
+        list.add(new Bogie("Sleeper", 72));
+        int total = list.stream().map(b -> b.getCapacity()).reduce(0, Integer::sum);
+        assertEquals(228, total);
+    }
+
+    @Test
+    void testReduce_SingleBogieCapacity() {
+        List<Bogie> list = new ArrayList<>();
+        list.add(new Bogie("Sleeper", 72));
+        int total = list.stream().map(b -> b.getCapacity()).reduce(0, Integer::sum);
+        assertEquals(72, total);
+    }
+
+    @Test
+    void testReduce_EmptyBogieList() {
+        List<Bogie> list = new ArrayList<>();
+        int total = list.stream().map(b -> b.getCapacity()).reduce(0, Integer::sum);
+        assertEquals(0, total);
+    }
+
+    @Test
+    void testReduce_CorrectCapacityExtraction() {
+        List<Bogie> list = getSampleBogies();
+        List<Integer> capacities = list.stream().map(b -> b.getCapacity()).collect(Collectors.toList());
+        assertEquals(Arrays.asList(72, 60, 24), capacities);
+    }
+
+    @Test
+    void testReduce_AllBogiesIncluded() {
+        List<Bogie> list = getSampleBogies();
+        int total = list.stream().map(b -> b.getCapacity()).reduce(0, Integer::sum);
+        assertTrue(total == 156);
+    }
+
+    @Test
+    void testReduce_OriginalListUnchanged() {
+        List<Bogie> list = getSampleBogies();
+        int sizeBefore = list.size();
+        list.stream().map(b -> b.getCapacity()).reduce(0, Integer::sum);
+        assertEquals(sizeBefore, list.size());
     }
 }
