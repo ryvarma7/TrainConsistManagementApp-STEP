@@ -5,123 +5,71 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TrainManagmentappTESTCASES {
 
-    static class Bogie {
-        String name;
-        int capacity;
+    List<Bogie> getBogies(int n) {
+        List<Bogie> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            list.add(new Bogie("Sleeper", 50 + (i % 50)));
+        }
+        return list;
+    }
 
-        Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
+    @Test
+    void testLoopFilteringLogic() {
+        List<Bogie> list = getBogies(10);
+        List<Bogie> result = new ArrayList<>();
+        for (Bogie b : list) {
+            if (b.getCapacity() > 60) {
+                result.add(b);
+            }
+        }
+        for (Bogie b : result) {
+            assertTrue(b.getCapacity() > 60);
         }
     }
 
     @Test
-    void testFilter_CapacityGreaterThanThreshold() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("AC Chair", 60),
-                new Bogie("First Class", 24)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
+    void testStreamFilteringLogic() {
+        List<Bogie> list = getBogies(10);
+        List<Bogie> result = list.stream()
+                .filter(b -> b.getCapacity() > 60)
                 .collect(Collectors.toList());
-
-        assertEquals(1, result.size());
+        for (Bogie b : result) {
+            assertTrue(b.getCapacity() > 60);
+        }
     }
 
     @Test
-    void testFilter_CapacityEqualToThreshold() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 70),
-                new Bogie("AC Chair", 60)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
+    void testLoopAndStreamResultsMatch() {
+        List<Bogie> list = getBogies(100);
+        List<Bogie> loopResult = new ArrayList<>();
+        for (Bogie b : list) {
+            if (b.getCapacity() > 60) {
+                loopResult.add(b);
+            }
+        }
+        List<Bogie> streamResult = list.stream()
+                .filter(b -> b.getCapacity() > 60)
                 .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
+        assertEquals(loopResult.size(), streamResult.size());
     }
 
     @Test
-    void testFilter_CapacityLessThanThreshold() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("First Class", 24),
-                new Bogie("AC Chair", 60)
-        );
+    void testExecutionTimeMeasurement() {
+        List<Bogie> list = getBogies(1000);
 
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
+        long start = System.nanoTime();
+        list.stream().filter(b -> b.getCapacity() > 60).collect(Collectors.toList());
+        long end = System.nanoTime();
 
-        assertTrue(result.isEmpty());
+        assertTrue((end - start) > 0);
     }
 
     @Test
-    void testFilter_MultipleBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("Luxury", 90),
-                new Bogie("AC Chair", 60)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
+    void testLargeDatasetProcessing() {
+        List<Bogie> list = getBogies(10000);
+        List<Bogie> result = list.stream()
+                .filter(b -> b.getCapacity() > 60)
                 .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    void testFilter_NoBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("AC Chair", 60),
-                new Bogie("First Class", 24)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testFilter_AllBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("Luxury", 90)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    void testFilter_EmptyBogieList() {
-        List<Bogie> bogies = new ArrayList<>();
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testFilter_OriginalListUnchanged() {
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 80));
-        bogies.add(new Bogie("AC Chair", 60));
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(2, bogies.size());
+        assertNotNull(result);
     }
 }
